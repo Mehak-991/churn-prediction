@@ -1,426 +1,358 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Customer Churn Prediction</title>
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>ChurnPredict - Customer Churn Prediction</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:#f0f4f8;color:#1e293b;min-height:100vh}
+a{text-decoration:none;color:inherit}
 
-        body {
-            font-family: Arial, sans-serif;
-            background: linear-gradient(135deg, #0f172a, #1e293b, #2563eb);
-            min-height: 100vh;
-            color: #e5e7eb;
-            padding: 30px 16px;
-        }
+/* NAV */
+.nav{background:#fff;padding:14px 40px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 1px 3px rgba(0,0,0,.06);position:sticky;top:0;z-index:100}
+.nav-logo{display:flex;align-items:center;gap:8px;font-weight:800;font-size:1.15rem;color:#1e293b}
+.nav-logo svg{width:28px;height:28px}
+.nav-links{display:flex;align-items:center;gap:28px;font-size:.9rem;font-weight:500}
+.nav-links a{color:#64748b;transition:.2s}
+.nav-links a:hover,.nav-links a.active{color:#2563eb}
+.nav-cta{background:#2563eb;color:#fff!important;padding:9px 20px;border-radius:8px;font-weight:600;transition:.2s}
+.nav-cta:hover{background:#1d4ed8;transform:translateY(-1px)}
 
-        .container {
-            max-width: 1200px;
-            margin: auto;
-        }
+/* HERO */
+.hero{padding:60px 40px 40px;max-width:1200px;margin:auto;display:flex;align-items:center;gap:48px}
+.hero-text{flex:1}
+.hero-text h1{font-size:2.6rem;font-weight:800;line-height:1.15;margin-bottom:16px;color:#0f172a}
+.hero-text p{color:#475569;font-size:1rem;line-height:1.7;margin-bottom:28px;max-width:440px}
+.hero-btns{display:flex;gap:14px}
+.btn-primary{background:#2563eb;color:#fff;padding:12px 28px;border-radius:10px;font-weight:600;font-size:.95rem;border:none;cursor:pointer;transition:.2s;display:inline-flex;align-items:center;gap:6px}
+.btn-primary:hover{background:#1d4ed8;transform:translateY(-1px);box-shadow:0 8px 20px rgba(37,99,235,.25)}
+.btn-outline{background:#fff;color:#1e293b;padding:12px 28px;border-radius:10px;font-weight:600;font-size:.95rem;border:1.5px solid #cbd5e1;cursor:pointer;transition:.2s}
+.btn-outline:hover{border-color:#2563eb;color:#2563eb}
+.hero-img{flex:1;display:flex;justify-content:center}
+.hero-img img{max-width:100%;border-radius:16px}
+.dashboard-preview{background:#fff;border-radius:16px;padding:24px;box-shadow:0 20px 40px rgba(0,0,0,.08);width:100%;max-width:460px}
+.dash-header{font-size:.75rem;color:#64748b;font-weight:600;margin-bottom:12px}
+.dash-row{display:flex;gap:12px;margin-bottom:12px}
+.dash-stat{flex:1;background:#f8fafc;border-radius:10px;padding:12px;text-align:center}
+.dash-stat .num{font-size:1.5rem;font-weight:800;color:#2563eb}
+.dash-stat .lbl{font-size:.7rem;color:#64748b;margin-top:2px}
+.dash-bars{display:flex;align-items:flex-end;gap:6px;height:60px;padding:8px 0}
+.dash-bars span{flex:1;background:#2563eb;border-radius:4px 4px 0 0;opacity:.7}
 
-        .hero {
-            text-align: center;
-            margin-bottom: 24px;
-        }
+/* FEATURES */
+.features{max-width:1200px;margin:0 auto 40px;padding:0 40px;display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.feat-card{background:#fff;border-radius:14px;padding:28px;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.feat-icon{width:44px;height:44px;background:#eff6ff;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:14px}
+.feat-icon svg{width:22px;height:22px;color:#2563eb}
+.feat-card h3{font-size:1rem;font-weight:700;margin-bottom:8px;color:#0f172a}
+.feat-card p{font-size:.85rem;color:#64748b;line-height:1.6}
 
-        .hero h1 {
-            font-size: 2.3rem;
-            margin-bottom: 10px;
-            color: #ffffff;
-        }
+/* FORM PAGE */
+.page-header{text-align:center;padding:40px 20px 10px}
+.page-header h1{font-size:1.8rem;font-weight:800;color:#0f172a;margin-bottom:6px}
+.page-header p{color:#64748b;font-size:.95rem}
+.form-card{max-width:980px;margin:24px auto 40px;background:#fff;border-radius:16px;padding:32px 36px;box-shadow:0 4px 16px rgba(0,0,0,.06)}
+.form-card h2{font-size:1.1rem;font-weight:700;margin-bottom:20px;color:#0f172a}
+.form-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.form-field label{display:block;font-size:.78rem;font-weight:600;color:#334155;margin-bottom:6px}
+.form-field select,.form-field input{width:100%;padding:10px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.88rem;color:#1e293b;background:#fff;font-family:'Inter',sans-serif;transition:.2s;outline:none;appearance:auto}
+.form-field select:focus,.form-field input:focus{border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.1)}
+.form-field input::placeholder{color:#94a3b8}
+.predict-btn{width:100%;margin-top:24px;padding:14px;background:linear-gradient(90deg,#2563eb,#3b82f6);color:#fff;border:none;border-radius:10px;font-size:1rem;font-weight:700;cursor:pointer;transition:.2s;display:flex;align-items:center;justify-content:center;gap:8px}
+.predict-btn:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(37,99,235,.3)}
 
-        .hero p {
-            color: #cbd5e1;
-            font-size: 1rem;
-            max-width: 780px;
-            margin: auto;
-            line-height: 1.6;
-        }
+/* RESULTS */
+.result-section{max-width:720px;margin:0 auto 40px;padding:0 20px}
+.result-main{background:#fff;border-radius:16px;padding:32px;box-shadow:0 4px 16px rgba(0,0,0,.06);border:2px solid #fee2e2;margin-bottom:20px;display:flex;gap:32px;align-items:center}
+.result-main.continue{border-color:#d1fae5}
+.result-info{flex:1}
+.result-label{font-size:.8rem;font-weight:700;color:#334155;margin-bottom:4px}
+.result-status{font-size:1.6rem;font-weight:800;margin-bottom:8px}
+.result-status.churn{color:#dc2626}
+.result-status.stay{color:#16a34a}
+.result-prob-label{font-size:.8rem;font-weight:600;color:#64748b}
+.result-prob{font-size:2.2rem;font-weight:800;color:#0f172a}
+.gauge-wrap{flex:1;display:flex;justify-content:center}
+.gauge-container{position:relative;width:180px;height:110px}
+.gauge-container canvas{width:180px;height:110px}
+.gauge-value{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);text-align:center}
+.gauge-value .pct{font-size:1.6rem;font-weight:800;color:#2563eb}
+.gauge-value .risk{font-size:.7rem;color:#64748b;font-weight:600}
+.gauge-labels{display:flex;justify-content:space-between;font-size:.65rem;color:#94a3b8;margin-top:2px;padding:0 6px}
 
-        .layout {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 24px;
-        }
+.summary-card{background:#fff;border-radius:16px;padding:28px;box-shadow:0 4px 16px rgba(0,0,0,.06)}
+.summary-card h3{color:#2563eb;font-size:1rem;font-weight:700;margin-bottom:18px}
+.summary-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.summary-item{display:flex;align-items:center;gap:10px}
+.summary-item .s-icon{width:36px;height:36px;background:#eff6ff;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.summary-item .s-icon svg{width:16px;height:16px;color:#2563eb}
+.summary-item .s-label{font-size:.68rem;color:#94a3b8;font-weight:500}
+.summary-item .s-value{font-size:.85rem;color:#0f172a;font-weight:700}
 
-        .card {
-            background: rgba(15, 23, 42, 0.78);
-            border: 1px solid rgba(255,255,255,0.12);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 24px;
-            box-shadow: 0 20px 45px rgba(0,0,0,0.25);
-        }
+.result-actions{display:flex;justify-content:center;gap:16px;margin-top:24px}
+.btn-back{padding:12px 32px;border-radius:10px;border:1.5px solid #e2e8f0;background:#fff;color:#1e293b;font-weight:600;font-size:.9rem;cursor:pointer;display:flex;align-items:center;gap:6px;transition:.2s}
+.btn-back:hover{border-color:#2563eb;color:#2563eb}
+.btn-download{padding:12px 32px;border-radius:10px;border:none;background:#dc2626;color:#fff;font-weight:600;font-size:.9rem;cursor:pointer;display:flex;align-items:center;gap:6px;transition:.2s}
+.btn-download:hover{background:#b91c1c}
 
-        .card h2 {
-            margin-bottom: 18px;
-            color: #ffffff;
-            font-size: 1.35rem;
-        }
-
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 16px;
-        }
-
-        .field {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .field label {
-            font-size: 0.92rem;
-            margin-bottom: 8px;
-            color: #dbeafe;
-            font-weight: 600;
-        }
-
-        .field input,
-        .field select {
-            width: 100%;
-            padding: 12px 14px;
-            border-radius: 12px;
-            border: 1px solid #334155;
-            background: #0f172a;
-            color: #f8fafc;
-            outline: none;
-            transition: 0.25s ease;
-        }
-
-        .field input:focus,
-        .field select:focus {
-            border-color: #60a5fa;
-            box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.18);
-        }
-
-        .full {
-            grid-column: 1 / -1;
-        }
-
-        .btn-row {
-            margin-top: 22px;
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-
-        button,
-        .reset-btn {
-            padding: 12px 20px;
-            border: none;
-            border-radius: 12px;
-            cursor: pointer;
-            font-size: 0.96rem;
-            font-weight: 700;
-            transition: 0.25s ease;
-            text-decoration: none;
-            display: inline-block;
-        }
-
-        button {
-            background: linear-gradient(90deg, #3b82f6, #06b6d4);
-            color: white;
-        }
-
-        button:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 12px 20px rgba(59,130,246,0.25);
-        }
-
-        .reset-btn {
-            background: #1e293b;
-            color: #e2e8f0;
-            border: 1px solid #334155;
-        }
-
-        .result-box {
-            margin-top: 18px;
-            border-radius: 16px;
-            padding: 18px;
-            background: rgba(30, 41, 59, 0.9);
-            border: 1px solid rgba(148, 163, 184, 0.2);
-        }
-
-        .result-title {
-            font-size: 1rem;
-            color: #93c5fd;
-            margin-bottom: 10px;
-            font-weight: 700;
-        }
-
-        .prediction {
-            font-size: 1.1rem;
-            line-height: 1.6;
-            color: #ffffff;
-            margin-bottom: 8px;
-        }
-
-        .confidence {
-            color: #cbd5e1;
-            font-weight: 600;
-        }
-
-        .side-list {
-            list-style: none;
-            display: grid;
-            gap: 12px;
-        }
-
-        .side-list li {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.08);
-            padding: 14px;
-            border-radius: 14px;
-            line-height: 1.5;
-            color: #dbeafe;
-        }
-
-        .badge {
-            display: inline-block;
-            padding: 6px 10px;
-            border-radius: 999px;
-            background: rgba(59,130,246,0.16);
-            color: #bfdbfe;
-            font-size: 0.82rem;
-            margin-bottom: 14px;
-            border: 1px solid rgba(59,130,246,0.22);
-        }
-
-        @media (max-width: 960px) {
-            .layout {
-                grid-template-columns: 1fr;
-            }
-
-            .grid {
-                grid-template-columns: 1fr;
-            }
-
-            .hero h1 {
-                font-size: 1.9rem;
-            }
-        }
-    </style>
+@media(max-width:768px){
+.hero{flex-direction:column;padding:30px 20px}
+.features,.form-grid,.summary-grid{grid-template-columns:1fr}
+.result-main{flex-direction:column;text-align:center}
+.nav{padding:12px 16px}
+.nav-links{gap:14px}
+.form-card{margin:16px;padding:20px}
+}
+</style>
 </head>
 <body>
-    <div class="container">
-        <div class="hero">
-            <div class="badge">Machine Learning + Flask Web App</div>
-            <h1>Customer Churn Prediction Dashboard</h1>
-            <p>
-                Enter telecom customer details below to predict whether the customer is likely to churn
-                or continue. This UI is designed to work with your current Flask backend.
-            </p>
-        </div>
 
-        <div class="layout">
-            <div class="card">
-                <h2>Prediction Form</h2>
+<!-- NAV -->
+<nav class="nav">
+ <div class="nav-logo">
+  <svg viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M8 12h8M8 8h5M8 16h3"/></svg>
+  ChurnPredict
+ </div>
+ <div class="nav-links">
+  <a href="/" class="active">Home</a>
+  <a href="#about">About</a>
+  <a href="#how">How it Works</a>
+  <a href="#contact">Contact</a>
+  <a href="#form-section" class="nav-cta">Try Prediction</a>
+ </div>
+</nav>
 
-                <form method="POST" action="/">
-                    <div class="grid">
-                        <div class="field">
-                            <label for="query1">Senior Citizen</label>
-                            <select id="query1" name="query1" required>
-                                <option value="">Select</option>
-                                <option value="0" {% if query1 == '0' %}selected{% endif %}>No</option>
-                                <option value="1" {% if query1 == '1' %}selected{% endif %}>Yes</option>
-                            </select>
-                        </div>
+{% if not output1 %}
+<!-- ===== LANDING + FORM ===== -->
 
-                        <div class="field">
-                            <label for="query2">Monthly Charges</label>
-                            <input type="number" step="0.01" id="query2" name="query2" value="{{ query2 or '' }}" required>
-                        </div>
+<!-- HERO -->
+<section class="hero">
+ <div class="hero-text">
+  <h1>Customer Churn<br>Prediction</h1>
+  <p>Predict the likelihood of customer churn using our machine learning model. Make data-driven decisions and retain your valuable customers.</p>
+  <div class="hero-btns">
+   <a href="#form-section" class="btn-primary">Get Started &rarr;</a>
+   <a href="#about" class="btn-outline">Learn More</a>
+  </div>
+ </div>
+ <div class="hero-img">
+  <div class="dashboard-preview">
+   <div class="dash-header">Churn Probability Dashboard</div>
+   <div class="dash-row">
+    <div class="dash-stat"><div class="num">72%</div><div class="lbl">High Risk</div></div>
+    <div class="dash-stat"><div class="num">1.2K</div><div class="lbl">Customers</div></div>
+   </div>
+   <div class="dash-bars">
+    <span style="height:40%"></span><span style="height:70%"></span><span style="height:55%"></span><span style="height:85%"></span><span style="height:60%"></span><span style="height:45%"></span><span style="height:75%"></span>
+   </div>
+  </div>
+ </div>
+</section>
 
-                        <div class="field">
-                            <label for="query3">Total Charges</label>
-                            <input type="number" step="0.01" id="query3" name="query3" value="{{ query3 or '' }}" required>
-                        </div>
+<!-- FEATURES -->
+<section class="features" id="about">
+ <div class="feat-card">
+  <div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg></div>
+  <h3>Accurate Predictions</h3>
+  <p>Our ML model analyzes customer data to predict churn with high accuracy.</p>
+ </div>
+ <div class="feat-card">
+  <div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg></div>
+  <h3>Data-Driven Insights</h3>
+  <p>Understand customer behavior and identify at-risk customers early.</p>
+ </div>
+ <div class="feat-card">
+  <div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg></div>
+  <h3>Improve Retention</h3>
+  <p>Take proactive actions to improve customer satisfaction and reduce churn.</p>
+ </div>
+</section>
 
-                        <div class="field">
-                            <label for="query4">Gender</label>
-                            <select id="query4" name="query4" required>
-                                <option value="">Select</option>
-                                <option value="Female" {% if query4 == 'Female' %}selected{% endif %}>Female</option>
-                                <option value="Male" {% if query4 == 'Male' %}selected{% endif %}>Male</option>
-                            </select>
-                        </div>
-
-                        <div class="field">
-                            <label for="query5">Partner</label>
-                            <select id="query5" name="query5" required>
-                                <option value="">Select</option>
-                                <option value="Yes" {% if query5 == 'Yes' %}selected{% endif %}>Yes</option>
-                                <option value="No" {% if query5 == 'No' %}selected{% endif %}>No</option>
-                            </select>
-                        </div>
-
-                        <div class="field">
-                            <label for="query6">Dependents</label>
-                            <select id="query6" name="query6" required>
-                                <option value="">Select</option>
-                                <option value="Yes" {% if query6 == 'Yes' %}selected{% endif %}>Yes</option>
-                                <option value="No" {% if query6 == 'No' %}selected{% endif %}>No</option>
-                            </select>
-                        </div>
-
-                        <div class="field">
-                            <label for="query7">Phone Service</label>
-                            <select id="query7" name="query7" required>
-                                <option value="">Select</option>
-                                <option value="Yes" {% if query7 == 'Yes' %}selected{% endif %}>Yes</option>
-                                <option value="No" {% if query7 == 'No' %}selected{% endif %}>No</option>
-                            </select>
-                        </div>
-
-                        <div class="field">
-                            <label for="query8">Multiple Lines</label>
-                            <select id="query8" name="query8" required>
-                                <option value="">Select</option>
-                                <option value="Yes" {% if query8 == 'Yes' %}selected{% endif %}>Yes</option>
-                                <option value="No" {% if query8 == 'No' %}selected{% endif %}>No</option>
-                                <option value="No phone service" {% if query8 == 'No phone service' %}selected{% endif %}>No phone service</option>
-                            </select>
-                        </div>
-
-                        <div class="field">
-                            <label for="query9">Internet Service</label>
-                            <select id="query9" name="query9" required>
-                                <option value="">Select</option>
-                                <option value="DSL" {% if query9 == 'DSL' %}selected{% endif %}>DSL</option>
-                                <option value="Fiber optic" {% if query9 == 'Fiber optic' %}selected{% endif %}>Fiber optic</option>
-                                <option value="No" {% if query9 == 'No' %}selected{% endif %}>No</option>
-                            </select>
-                        </div>
-
-                        <div class="field">
-                            <label for="query10">Online Security</label>
-                            <select id="query10" name="query10" required>
-                                <option value="">Select</option>
-                                <option value="Yes" {% if query10 == 'Yes' %}selected{% endif %}>Yes</option>
-                                <option value="No" {% if query10 == 'No' %}selected{% endif %}>No</option>
-                                <option value="No internet service" {% if query10 == 'No internet service' %}selected{% endif %}>No internet service</option>
-                            </select>
-                        </div>
-
-                        <div class="field">
-                            <label for="query11">Online Backup</label>
-                            <select id="query11" name="query11" required>
-                                <option value="">Select</option>
-                                <option value="Yes" {% if query11 == 'Yes' %}selected{% endif %}>Yes</option>
-                                <option value="No" {% if query11 == 'No' %}selected{% endif %}>No</option>
-                                <option value="No internet service" {% if query11 == 'No internet service' %}selected{% endif %}>No internet service</option>
-                            </select>
-                        </div>
-
-                        <div class="field">
-                            <label for="query12">Device Protection</label>
-                            <select id="query12" name="query12" required>
-                                <option value="">Select</option>
-                                <option value="Yes" {% if query12 == 'Yes' %}selected{% endif %}>Yes</option>
-                                <option value="No" {% if query12 == 'No' %}selected{% endif %}>No</option>
-                                <option value="No internet service" {% if query12 == 'No internet service' %}selected{% endif %}>No internet service</option>
-                            </select>
-                        </div>
-
-                        <div class="field">
-                            <label for="query13">Tech Support</label>
-                            <select id="query13" name="query13" required>
-                                <option value="">Select</option>
-                                <option value="Yes" {% if query13 == 'Yes' %}selected{% endif %}>Yes</option>
-                                <option value="No" {% if query13 == 'No' %}selected{% endif %}>No</option>
-                                <option value="No internet service" {% if query13 == 'No internet service' %}selected{% endif %}>No internet service</option>
-                            </select>
-                        </div>
-
-                        <div class="field">
-                            <label for="query14">Streaming TV</label>
-                            <select id="query14" name="query14" required>
-                                <option value="">Select</option>
-                                <option value="Yes" {% if query14 == 'Yes' %}selected{% endif %}>Yes</option>
-                                <option value="No" {% if query14 == 'No' %}selected{% endif %}>No</option>
-                                <option value="No internet service" {% if query14 == 'No internet service' %}selected{% endif %}>No internet service</option>
-                            </select>
-                        </div>
-
-                        <div class="field">
-                            <label for="query15">Streaming Movies</label>
-                            <select id="query15" name="query15" required>
-                                <option value="">Select</option>
-                                <option value="Yes" {% if query15 == 'Yes' %}selected{% endif %}>Yes</option>
-                                <option value="No" {% if query15 == 'No' %}selected{% endif %}>No</option>
-                                <option value="No internet service" {% if query15 == 'No internet service' %}selected{% endif %}>No internet service</option>
-                            </select>
-                        </div>
-
-                        <div class="field">
-                            <label for="query16">Contract</label>
-                            <select id="query16" name="query16" required>
-                                <option value="">Select</option>
-                                <option value="Month-to-month" {% if query16 == 'Month-to-month' %}selected{% endif %}>Month-to-month</option>
-                                <option value="One year" {% if query16 == 'One year' %}selected{% endif %}>One year</option>
-                                <option value="Two year" {% if query16 == 'Two year' %}selected{% endif %}>Two year</option>
-                            </select>
-                        </div>
-
-                        <div class="field">
-                            <label for="query17">Paperless Billing</label>
-                            <select id="query17" name="query17" required>
-                                <option value="">Select</option>
-                                <option value="Yes" {% if query17 == 'Yes' %}selected{% endif %}>Yes</option>
-                                <option value="No" {% if query17 == 'No' %}selected{% endif %}>No</option>
-                            </select>
-                        </div>
-
-                        <div class="field">
-                            <label for="query18">Payment Method</label>
-                            <select id="query18" name="query18" required>
-                                <option value="">Select</option>
-                                <option value="Electronic check" {% if query18 == 'Electronic check' %}selected{% endif %}>Electronic check</option>
-                                <option value="Mailed check" {% if query18 == 'Mailed check' %}selected{% endif %}>Mailed check</option>
-                                <option value="Bank transfer (automatic)" {% if query18 == 'Bank transfer (automatic)' %}selected{% endif %}>Bank transfer (automatic)</option>
-                                <option value="Credit card (automatic)" {% if query18 == 'Credit card (automatic)' %}selected{% endif %}>Credit card (automatic)</option>
-                            </select>
-                        </div>
-
-                        <div class="field">
-                            <label for="query19">Tenure (months)</label>
-                            <input type="number" id="query19" name="query19" value="{{ query19 or '' }}" required>
-                        </div>
-                    </div>
-
-                    <div class="btn-row">
-                        <button type="submit">Predict Churn</button>
-                        <a href="/" class="reset-btn">Reset</a>
-                    </div>
-                </form>
-
-                {% if output1 %}
-                <div class="result-box">
-                    <div class="result-title">Prediction Result</div>
-                    <div class="prediction">{{ output1 }}</div>
-                    <div class="confidence">{{ output2 }}</div>
-                </div>
-                {% endif %}
-            </div>
-
-            <div class="card">
-                <h2>Project Highlights</h2>
-                <ul class="side-list">
-                    <li><strong>Goal:</strong> Predict whether a telecom customer is likely to churn.</li>
-                    <li><strong>Model:</strong> Random Forest classifier integrated with Flask backend.</li>
-                    <li><strong>Output:</strong> Churn / Continue with confidence score.</li>
-                    <li><strong>Use Case:</strong> Helps businesses identify at-risk customers early.</li>
-                </ul>
-            </div>
-        </div>
+<!-- FORM -->
+<div id="form-section">
+ <div class="page-header">
+  <h1>Predict Customer Churn</h1>
+  <p>Enter customer details below to predict the likelihood of churn.</p>
+ </div>
+ <div class="form-card">
+  <h2>Customer Information</h2>
+  <form method="POST" action="/">
+   <div class="form-grid">
+    <div class="form-field">
+     <label>Gender</label>
+     <select name="query4" required><option value="">Select Gender</option><option value="Female" {% if query4=='Female' %}selected{% endif %}>Female</option><option value="Male" {% if query4=='Male' %}selected{% endif %}>Male</option></select>
     </div>
+    <div class="form-field">
+     <label>Senior Citizen</label>
+     <select name="query1" required><option value="">Select</option><option value="0" {% if query1=='0' %}selected{% endif %}>No</option><option value="1" {% if query1=='1' %}selected{% endif %}>Yes</option></select>
+    </div>
+    <div class="form-field">
+     <label>Partner</label>
+     <select name="query5" required><option value="">Select</option><option value="Yes" {% if query5=='Yes' %}selected{% endif %}>Yes</option><option value="No" {% if query5=='No' %}selected{% endif %}>No</option></select>
+    </div>
+    <div class="form-field">
+     <label>Dependents</label>
+     <select name="query6" required><option value="">Select</option><option value="Yes" {% if query6=='Yes' %}selected{% endif %}>Yes</option><option value="No" {% if query6=='No' %}selected{% endif %}>No</option></select>
+    </div>
+    <div class="form-field">
+     <label>Tenure (Months)</label>
+     <input type="number" name="query19" placeholder="Enter tenure in months" value="{{ query19 or '' }}" required>
+    </div>
+    <div class="form-field">
+     <label>Phone Service</label>
+     <select name="query7" required><option value="">Select</option><option value="Yes" {% if query7=='Yes' %}selected{% endif %}>Yes</option><option value="No" {% if query7=='No' %}selected{% endif %}>No</option></select>
+    </div>
+    <div class="form-field">
+     <label>Multiple Lines</label>
+     <select name="query8" required><option value="">Select</option><option value="Yes" {% if query8=='Yes' %}selected{% endif %}>Yes</option><option value="No" {% if query8=='No' %}selected{% endif %}>No</option><option value="No phone service" {% if query8=='No phone service' %}selected{% endif %}>No phone service</option></select>
+    </div>
+    <div class="form-field">
+     <label>Internet Service</label>
+     <select name="query9" required><option value="">Select</option><option value="DSL" {% if query9=='DSL' %}selected{% endif %}>DSL</option><option value="Fiber optic" {% if query9=='Fiber optic' %}selected{% endif %}>Fiber optic</option><option value="No" {% if query9=='No' %}selected{% endif %}>No</option></select>
+    </div>
+    <div class="form-field">
+     <label>Online Security</label>
+     <select name="query10" required><option value="">Select</option><option value="Yes" {% if query10=='Yes' %}selected{% endif %}>Yes</option><option value="No" {% if query10=='No' %}selected{% endif %}>No</option><option value="No internet service" {% if query10=='No internet service' %}selected{% endif %}>No internet service</option></select>
+    </div>
+    <div class="form-field">
+     <label>Online Backup</label>
+     <select name="query11" required><option value="">Select</option><option value="Yes" {% if query11=='Yes' %}selected{% endif %}>Yes</option><option value="No" {% if query11=='No' %}selected{% endif %}>No</option><option value="No internet service" {% if query11=='No internet service' %}selected{% endif %}>No internet service</option></select>
+    </div>
+    <div class="form-field">
+     <label>Device Protection</label>
+     <select name="query12" required><option value="">Select</option><option value="Yes" {% if query12=='Yes' %}selected{% endif %}>Yes</option><option value="No" {% if query12=='No' %}selected{% endif %}>No</option><option value="No internet service" {% if query12=='No internet service' %}selected{% endif %}>No internet service</option></select>
+    </div>
+    <div class="form-field">
+     <label>Tech Support</label>
+     <select name="query13" required><option value="">Select</option><option value="Yes" {% if query13=='Yes' %}selected{% endif %}>Yes</option><option value="No" {% if query13=='No' %}selected{% endif %}>No</option><option value="No internet service" {% if query13=='No internet service' %}selected{% endif %}>No internet service</option></select>
+    </div>
+    <div class="form-field">
+     <label>Streaming TV</label>
+     <select name="query14" required><option value="">Select</option><option value="Yes" {% if query14=='Yes' %}selected{% endif %}>Yes</option><option value="No" {% if query14=='No' %}selected{% endif %}>No</option><option value="No internet service" {% if query14=='No internet service' %}selected{% endif %}>No internet service</option></select>
+    </div>
+    <div class="form-field">
+     <label>Streaming Movies</label>
+     <select name="query15" required><option value="">Select</option><option value="Yes" {% if query15=='Yes' %}selected{% endif %}>Yes</option><option value="No" {% if query15=='No' %}selected{% endif %}>No</option><option value="No internet service" {% if query15=='No internet service' %}selected{% endif %}>No internet service</option></select>
+    </div>
+    <div class="form-field">
+     <label>Contract</label>
+     <select name="query16" required><option value="">Select</option><option value="Month-to-month" {% if query16=='Month-to-month' %}selected{% endif %}>Month-to-month</option><option value="One year" {% if query16=='One year' %}selected{% endif %}>One year</option><option value="Two year" {% if query16=='Two year' %}selected{% endif %}>Two year</option></select>
+    </div>
+    <div class="form-field">
+     <label>Paperless Billing</label>
+     <select name="query17" required><option value="">Select</option><option value="Yes" {% if query17=='Yes' %}selected{% endif %}>Yes</option><option value="No" {% if query17=='No' %}selected{% endif %}>No</option></select>
+    </div>
+    <div class="form-field">
+     <label>Payment Method</label>
+     <select name="query18" required><option value="">Select</option><option value="Electronic check" {% if query18=='Electronic check' %}selected{% endif %}>Electronic check</option><option value="Mailed check" {% if query18=='Mailed check' %}selected{% endif %}>Mailed check</option><option value="Bank transfer (automatic)" {% if query18=='Bank transfer (automatic)' %}selected{% endif %}>Bank transfer (automatic)</option><option value="Credit card (automatic)" {% if query18=='Credit card (automatic)' %}selected{% endif %}>Credit card (automatic)</option></select>
+    </div>
+    <div class="form-field">
+     <label>Monthly Charges ($)</label>
+     <input type="number" step="0.01" name="query2" placeholder="Enter monthly charges" value="{{ query2 or '' }}" required>
+    </div>
+    <div class="form-field">
+     <label>Total Charges ($)</label>
+     <input type="number" step="0.01" name="query3" placeholder="Enter total charges" value="{{ query3 or '' }}" required>
+    </div>
+   </div>
+   <button type="submit" class="predict-btn">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+    Predict Churn
+   </button>
+  </form>
+ </div>
+</div>
+
+{% else %}
+<!-- ===== RESULTS PAGE ===== -->
+<div class="page-header">
+ <h1>Prediction Result</h1>
+ <p>Here is the churn prediction for the customer.</p>
+</div>
+
+<div class="result-section">
+ {% set is_churn = 'churned' in output1 %}
+ {% set prob_text = output2.replace('Confidence: ','').replace('%','') %}
+
+ <div class="result-main {% if not is_churn %}continue{% endif %}">
+  <div class="result-info">
+   <div class="result-label">Churn Prediction</div>
+   <div class="result-status {% if is_churn %}churn{% else %}stay{% endif %}">
+    {% if is_churn %}Likely to Churn{% else %}Likely to Stay{% endif %}
+   </div>
+   <div class="result-prob-label">Probability</div>
+   <div class="result-prob">{{ prob_text }}%</div>
+  </div>
+  <div class="gauge-wrap">
+   <div class="gauge-container">
+    <canvas id="gauge" width="180" height="110"></canvas>
+    <div class="gauge-value">
+     <div class="pct">{{ prob_text }}%</div>
+     <div class="risk">{% if is_churn %}High Risk{% else %}Low Risk{% endif %}</div>
+    </div>
+    <div class="gauge-labels"><span>0%</span><span>100%</span></div>
+   </div>
+  </div>
+ </div>
+
+ <div class="summary-card">
+  <h3>Customer Summary</h3>
+  <div class="summary-grid">
+   <div class="summary-item">
+    <div class="s-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div>
+    <div><div class="s-label">Tenure (Months)</div><div class="s-value">{{ query19 }}</div></div>
+   </div>
+   <div class="summary-item">
+    <div class="s-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="18" rx="2"/><path d="M2 9h20"/></svg></div>
+    <div><div class="s-label">Monthly Charges</div><div class="s-value">${{ query2 }}</div></div>
+   </div>
+   <div class="summary-item">
+    <div class="s-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></div>
+    <div><div class="s-label">Total Charges</div><div class="s-value">${{ query3 }}</div></div>
+   </div>
+   <div class="summary-item">
+    <div class="s-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></div>
+    <div><div class="s-label">Contract</div><div class="s-value">{{ query16 }}</div></div>
+   </div>
+   <div class="summary-item">
+    <div class="s-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg></div>
+    <div><div class="s-label">Payment Method</div><div class="s-value">{{ query18 }}</div></div>
+   </div>
+   <div class="summary-item">
+    <div class="s-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12.55a11 11 0 0114.08 0M8.53 16.11a6 6 0 016.95 0M12 20h.01"/></svg></div>
+    <div><div class="s-label">Internet Service</div><div class="s-value">{{ query9 }}</div></div>
+   </div>
+  </div>
+ </div>
+
+ <div class="result-actions">
+  <a href="/" class="btn-back">&larr; Back</a>
+  <button class="btn-download" onclick="window.print()">&#128196; Download Report</button>
+ </div>
+</div>
+
+<script>
+(function(){
+ var c=document.getElementById('gauge');
+ if(!c)return;
+ var ctx=c.getContext('2d');
+ var prob=parseFloat('{{ prob_text }}')||0;
+ var cx=90,cy=100,r=70;
+ // background arc
+ ctx.beginPath();ctx.arc(cx,cy,r,Math.PI,0);ctx.lineWidth=18;ctx.strokeStyle='#e2e8f0';ctx.lineCap='round';ctx.stroke();
+ // colored arc
+ var grad=ctx.createLinearGradient(0,0,180,0);
+ grad.addColorStop(0,'#22c55e');grad.addColorStop(0.5,'#eab308');grad.addColorStop(1,'#ef4444');
+ var angle=Math.PI+(prob/100)*Math.PI;
+ ctx.beginPath();ctx.arc(cx,cy,r,Math.PI,angle);ctx.lineWidth=18;ctx.strokeStyle=grad;ctx.lineCap='round';ctx.stroke();
+ // needle dot
+ var nx=cx+r*Math.cos(angle),ny=cy+r*Math.sin(angle);
+ ctx.beginPath();ctx.arc(nx,ny,6,0,2*Math.PI);ctx.fillStyle='#1e293b';ctx.fill();
+})();
+</script>
+{% endif %}
+
 </body>
 </html>
