@@ -16,7 +16,8 @@ df_1.drop(columns=['tenure'], inplace=True)
 
 @app.route("/")
 def loadPage():
-    return render_template('home.html', query="")
+    empty_values = {f"query{i}": "" for i in range(1, 20)}
+    return render_template("home.html", output1="", output2="", **empty_values)
 
 @app.route("/", methods=['POST'])
 def predict():
