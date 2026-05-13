@@ -1,8 +1,14 @@
 import pandas as pd
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, session, redirect, url_for
 import pickle
+from datetime import datetime
 
 app = Flask(__name__)
+app.secret_key = 'churnpredict_secret_key_2026'
+
+# ---- Admin Credentials ----
+ADMIN_EMAIL = "missmehak@gmail.com"
+ADMIN_PASSWORD = "12345"
 
 # Load original dataset and model
 df_1 = pd.read_csv("first_telc.csv")
@@ -14,6 +20,11 @@ labels = [f"{i} - {i + 11}" for i in range(1, 72, 12)]
 df_1['tenure_group'] = pd.cut(df_1['tenure'], range(1, 80, 12), right=False, labels=labels)
 df_1.drop(columns=['tenure'], inplace=True)
 
+# Global list to store contact form messages
+admin_messages = []
+
+# ========== PUBLIC ROUTES ==========
+
 @app.route("/")
 def loadPage():
     empty_values = {f"query{i}": "" for i in range(1, 20)}
@@ -21,8 +32,24 @@ def loadPage():
 
 @app.route("/", methods=['POST'])
 def predict():
-    # Input
-    input_data = [request.form[f'query{i}'] for i in range(1, 20)]
+    # Check if this is a contact form submission
+    if 'contact_submit' in request.form:
+        new_msg = {
+            'name': f"{request.form.get('first_name', '')} {request.form.get('last_name', '')}".strip(),
+            'email': request.form.get('email', ''),
+            'phone': request.form.get('phone', ''),
+            'date': datetime.now().strftime("%B %d, %Y at %I:%M %p"),
+            'message': request.form.get('message', '')
+        }
+        # Insert at the beginning so newest messages appear on top
+        admin_messages.insert(0, new_msg)
+
+        # Reload the page with empty form and a success flag
+        empty_values = {f"query{i}": "" for i in range(1, 20)}
+        return render_template("home.html", output1="", output2="", contact_success=True, **empty_values)
+
+    # Otherwise, it is a churn prediction submission
+    input_data = [request.form.get(f'query{i}', '') for i in range(1, 20)]
 
     new_df = pd.DataFrame([input_data], columns=[
         'SeniorCitizen', 'MonthlyCharges', 'TotalCharges', 'gender',
@@ -76,7 +103,36 @@ def predict():
     return render_template('home.html',
                            output1=output1,
                            output2=output2,
-                           **{f"query{i}": request.form[f"query{i}"] for i in range(1, 20)})
+                           **{f"query{i}": request.form.get(f"query{i}", "") for i in range(1, 20)})
+
+# ========== ADMIN ROUTES ==========
+
+@app.route("/admin", methods=['GET', 'POST'])
+def adminLogin():
+    # If admin is already logged in, show the dashboard
+    if session.get('is_admin'):
+        return render_template("home.html", is_admin=True, admin_messages=admin_messages, output1="", output2="",
+                               **{f"query{i}": "" for i in range(1, 20)})
+
+    # Handle login form submission
+    error = ""
+    if request.method == 'POST':
+        email = request.form.get('admin_email', '')
+        password = request.form.get('admin_password', '')
+        if email == ADMIN_EMAIL and password == ADMIN_PASSWORD:
+            session['is_admin'] = True
+            return redirect(url_for('adminLogin'))
+        else:
+            error = "Invalid email or password. Please try again."
+
+    # Show login page
+    return render_template("home.html", show_admin_login=True, admin_login_error=error, output1="", output2="",
+                           **{f"query{i}": "" for i in range(1, 20)})
+
+@app.route("/admin/logout")
+def adminLogout():
+    session.pop('is_admin', None)
+    return redirect(url_for('loadPage'))
 
 if __name__ == "__main__":
     app.run(debug=True)
